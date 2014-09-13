@@ -6,6 +6,7 @@
 #
 # NECESSARIO adaptar este esqueleto de makefile para suas necessidades.
 # 
+all: libsthread sthread.o sdata.o
 
 libsthread: sthread.o sdata.o
 	ar crs ./lib/libsthread.a ./bin/sdata.o ./bin/sthread.o

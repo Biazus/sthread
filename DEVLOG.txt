@@ -1,8 +1,11 @@
 Perguntas
-- A mainThread deve ser colocada na lista de threads (apto)? Nao parece fazer sentido ja que eh thread do "SO"
+- A mainThread deve ser colocada na lista de threads (apto)? Nao parece
+	fazer sentido ja que eh thread do "SO"
 
-- Escalonador = mainThread ou podem ser 2 funcoes diferentes?
+- Escalonador == mainThread?  ou podem ser 2 funcoes diferentes?
 
+- Depois de chamar um wait, por exemplo, ele retorna lá pro arquivo de 
+	teste ou já executa o que tem q executar?
 
 TASKS
 - Colocar initialize() no inicio de todas as funcoes da sthread.c

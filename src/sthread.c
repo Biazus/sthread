@@ -2,6 +2,10 @@
 
 int screate (int prio, void (*start)(void*), void *arg){
 
+	if(prio < 0 || prio > 2 ){
+		printf("!! ## SCREATE ## ERROR. Prioridade invalida");
+		return ERROR;
+	}
 	if(currentTid==0){  //inicializa thread main
 		initialize();
 	}

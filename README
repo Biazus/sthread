@@ -1,6 +1,4 @@
-
 Estrutura de diretórios de sthread
-
 sthread/
 |-- bin
 |-- exemplos
@@ -19,13 +17,9 @@ sthread/
 |-- src
 `-- testes
 
-O trabalho entregue deve seguir RIGOROSAMENTE a estrutura de diretórios acima. Os testes desenvolvidos pelo grupo devem estar no diretório testes com um Makefile adequado para a compilação de todos os testes (regra all) e limpeza (regra clean), conforme especificação.
-
-O arquivo "relatorio.pdf" (zero bytes) deve ser substituido pelo relatório do grupo contendo as respostas aos questionamentos propostos na especificação.
-
-Atenciosamente
-A. Carissimi/S. Cechin
-2014-02
+Os testes desenvolvidos pelo grupo devem estar no diretório testes,
+com um Makefile adequado para a compilação de todos os testes (regra all)
+e limpeza (regra clean).
 
 
 

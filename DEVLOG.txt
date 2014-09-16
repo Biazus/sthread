@@ -1,0 +1,9 @@
+Perguntas
+- A mainThread deve ser colocada na lista de threads (apto)? Nao parece fazer sentido ja que eh thread do "SO"
+
+- Escalonador = mainThread ou podem ser 2 funcoes diferentes?
+
+
+TASKS
+- Colocar initialize() no inicio de todas as funcoes da sthread.c
+- swait deve funcionar para quando a thread espera seu proprio termino

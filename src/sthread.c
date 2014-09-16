@@ -3,9 +3,7 @@
 int screate (int prio, void (*start)(void*), void *arg){
 
 	if(currentTid==0){  //inicializa thread main
-		
 		initialize();
-		
 	}
 	if(totalThreads < MAXTHREADS) //se nao excedeu o total de threads
 	{

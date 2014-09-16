@@ -36,6 +36,12 @@ int syield(void){
 int swait(int tid){
 	
 	TCB* threadAwaited = findThreadById(&list_ready, tid);
+	
+	if(threadAwaited->tid == runningThread.tid){ //thread esperando o fim dela mesma...
+		printf("\n## SWAIT ## Thread %d espera termino da thread %d \n", runningThread.tid, threadAwaited->tid);
+		return 0;
+		}
+	
 	if(threadAwaited->tidThreadBlocked > 0){
 		printf("!! ## SWAIT ## ERROR. Thread %d ja aguarda o termino da thread %d !", threadAwaited->tidThreadBlocked, threadAwaited->tid);
 		return ERROR;

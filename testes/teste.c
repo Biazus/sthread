@@ -23,8 +23,8 @@ int main(int argc, char *argv[]) {
 
     printf("\n\nTeste... criou threads (%d), (%d), (%d)\n", id0, id1, id2);
 
-    //swait(id0);
-    //swait(id1);
+    swait(id0);
+    swait(id1);
 
     //printf("Eu sou a main voltando para terminar o programa\n");
     return 0;

@@ -24,12 +24,9 @@
 	int tid; //id da thread
 	int estado; 
 	int prio; //prioridade da thread ( 0 == alta, 1 == media, 2 == baixa)
-	int canBeFinished; //indica se thread pode ser finalizada
-	int tidThreadBlocked; //qual thread precisa ser liberada com o termino desta thread
-    int waitingFor; //quantas threads esta thread esta esperando terminar
-	ucontext_t context; //contexto da thread
-	void* (*f) (void*); //funcao que a thread executa
-	void* args; //argumento(s) da funcao
+	int waitingFor; //
+	int bloqueando;
+	ucontext_t *context; //contexto da thread
 	//struct tcb *next; //ponteiro para o proximo elemento da lista (poderia ser feita uma lista de threads)
  } TCB;
  
@@ -48,13 +45,15 @@ typedef struct mutex {
 
 // ************************************* FUNCS
 
-void mainThreadFunc();
 void initialize();
+void scheduler();
 
 TCB createThread (int tid, int state, int prio, ucontext_t context, void* (*f) (void*), void* args);
 threadList* insertThread(threadList* thrList, TCB thr);
-TCB* findThreadById(threadList** thrList, int id);
 threadList* insertThreadTop(threadList* thrList, TCB thr);
+TCB* searchThreadById(threadList** thrList, int id);
+TCB* removeThreadBlocked(threadList** thrList, int tid);//se alguma thread estiver esperando pelo id atual, remove 
+TCB removeThread(threadList** thrList);
 
 void printThreadInfo(TCB thread);
 void printCurrentState(void);
@@ -62,13 +61,16 @@ void printList(threadList* thrList);
 int sizeList(threadList* thrList);
 
 // ************************************* VARS
-
-int totalThreads; //numero total de thread (thread main nao inclusa)
+int started;
+int totalThreads; //numero total de thread
 int currentTid; //tid do ultimo elemento inserido na lista para controlar proximo tid
+int vetorDeWaits[100];
+int indicevetorDeWaits;
 
-TCB runningThread; //thread em estado running
+TCB *runningThread; //thread em estado running
 
 threadList* list_ready; //lista de threads com estado ready
 threadList* list_blocked; //lista de threads com estado blocked
 
-ucontext_t mainCtx; //contexto do escalonador
+ucontext_t *schedulerCtx; //contexto scheduler
+ucontext_t *finalizadaCtx;

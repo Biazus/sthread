@@ -14,7 +14,7 @@ void func1(void *arg) {
 
 int main(int argc, char *argv[]) {
 
-    int	id0, id1, id2;
+    int	id0, id1, id2, id3;
 	int i;
 
     id0 = screate(0, func0, (void *)&i);
@@ -23,7 +23,8 @@ int main(int argc, char *argv[]) {
 
     printf("\n\nTeste... criou threads (%d), (%d), (%d)\n", id0, id1, id2);
 
-    //swait(id0);
+    swait(id2);
+    id3 = screate(0, func1, (void *)&i);
     //swait(id1);
 
     //printf("Eu sou a main voltando para terminar o programa\n");

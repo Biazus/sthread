@@ -25,6 +25,7 @@
 	int estado; 
 	int prio; //prioridade da thread ( 0 == alta, 1 == media, 2 == baixa)
 	int waitingFor; //
+	int bloqueando;
 	ucontext_t *context; //contexto da thread
 	//struct tcb *next; //ponteiro para o proximo elemento da lista (poderia ser feita uma lista de threads)
  } TCB;
@@ -49,8 +50,10 @@ void scheduler();
 
 TCB createThread (int tid, int state, int prio, ucontext_t context, void* (*f) (void*), void* args);
 threadList* insertThread(threadList* thrList, TCB thr);
-threadList* findThreadById(threadList** thrList, int id);
 threadList* insertThreadTop(threadList* thrList, TCB thr);
+TCB* searchThreadById(threadList** thrList, int id);
+TCB* removeThreadBlocked(threadList** thrList, int tid);//se alguma thread estiver esperando pelo id atual, remove 
+TCB removeThread(threadList** thrList);
 
 void printThreadInfo(TCB thread);
 void printCurrentState(void);
@@ -61,6 +64,8 @@ int sizeList(threadList* thrList);
 int started;
 int totalThreads; //numero total de thread
 int currentTid; //tid do ultimo elemento inserido na lista para controlar proximo tid
+int vetorDeWaits[100];
+int indicevetorDeWaits;
 
 TCB *runningThread; //thread em estado running
 

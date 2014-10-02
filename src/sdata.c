@@ -1,10 +1,27 @@
 #include "../include/sdata.h"
 
 //************ "SISTEMA"
+
+//para fazer assignment de uma thread de removeThread proceder assim:
+// *runningThread = removeThread(&list_ready);
+
 void scheduler()
 {
 	getcontext(schedulerCtx);
-	printf("EU sou o escalonador!! Devo escalonar.\n");
+	printf("\nCONTEXTO DO ESCALONADOR.\n");
+	while(list_ready){
+		*runningThread = removeThread(&list_ready);
+	
+		printCurrentState();
+		swapcontext(schedulerCtx,runningThread->context);
+		//testar aqui se a thread que terminou nao desbloqueia alguma 
+		if(runningThread->bloqueando != -1) //significa q ela esta bloqueando alguma
+			printf("malandra ta bloqueando");
+			//TODO remover da fila de bloqueados
+			//removeThreadBlocked(&list_blocked, runningThread->bloqueando);
+		}
+	printCurrentState();
+	
 }
 void threadFinalizada()
 {
@@ -30,6 +47,7 @@ void initialize()
 	currentTid++;
 	
 	runningThread = (TCB *)malloc(sizeof(TCB));
+	runningThread->bloqueando = -1;
 	runningThread->context = novoContexto();
 	(runningThread->context)->uc_link = NULL;
 	
@@ -88,6 +106,15 @@ threadList* insertThreadTop(threadList* thrList, TCB thr) //insere thread no ini
 	return newNode;
 }
 
+TCB removeThread(threadList** thrList)
+{
+     threadList* curr = (*thrList);
+     TCB head = curr->thread;
+     *thrList = curr->next;
+     return head;
+}
+
+
 /*TCB* findThreadById(threadList** thrList, int id){
 	threadList *curr = *thrList;
 	while(curr != NULL && curr->thread.tid != id){ 
@@ -97,36 +124,27 @@ threadList* insertThreadTop(threadList* thrList, TCB thr) //insere thread no ini
 	return &curr->thread;
 }*/
 
-threadList* findThreadById(threadList** thrList, int id){
+TCB* removeThreadBlocked(threadList** thrList, int tid){
+	threadList *curr = *thrList;
+	threadList *prev = NULL;
+	printf("Nao deu");
+	while(curr != NULL && curr->thread.waitingFor != tid){ 
+			prev = curr;
+			curr = curr->next;
+	}
+	if(prev != NULL)
+		prev->next = curr->next;
+	else
+		*thrList = curr->next;
+	return &curr->thread;
+}
 
-    threadList *ptr = *thrList;
-    threadList *tmp = NULL;
-    int found = 0;
-
-    while(ptr != NULL)
-    {
-        if(ptr->thread.tid == id)
-        {
-            found = 1;
-            break;
-        }
-        else
-        {
-            tmp = ptr;
-            ptr = ptr->next;
-        }
-    }
-
-    if(found)
-    {
-        if(thrList)
-            *thrList = tmp;
-        return ptr;
-    }
-    else
-    {
-        return NULL;
-    }
+TCB* searchThreadById(threadList** thrList, int id){
+	threadList *curr = *thrList;
+	while(curr != NULL && curr->thread.tid != id){ 
+			curr = curr->next;
+	}	
+	return &curr->thread;
 }
 
 //************ UTILIDADES
@@ -141,19 +159,19 @@ void printList(threadList* thrList)//imprime info de elementos da lista
 		ptAux = ptAux->next;
 		printf("  ");
 	}
-	printf("Tamanho da lista: %d\n\n", sizeList(thrList));
+	printf("\tTamanho da lista: %d\n\n", sizeList(thrList));
 }
 
 void printThreadInfo(TCB thread)
 {
 	if(thread.tid >= 0)
-		printf("\t[TID: %d, Prio: %d, Waiting: %d]\n", thread.tid, thread.prio, thread.waitingFor);
+		printf("\t[TID: %d, Prio: %d, Waiting: %d, Bloqueando: %d]\n", thread.tid, thread.prio, thread.waitingFor, thread.bloqueando);
 }
 
 void printCurrentState()
 {
-	printf("\nRODANDO:\n ");
-	printf("TID: %d, Prio: %d, Waiting: %d\n", runningThread->tid, runningThread->prio, runningThread->waitingFor);
+	printf("\nRODANDO:\n");
+	printf("\tTID: %d, Prio: %d, Waiting: %d, Bloqueando: %d\n", runningThread->tid, runningThread->prio, runningThread->waitingFor, runningThread->bloqueando);
 	printf("LISTA DE APTOS:\n   ");
 	printList(list_ready);
 	printf("LISTA DE BLOQUEADOS:\n   ");

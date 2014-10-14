@@ -15,13 +15,13 @@ void scheduler()
 		printCurrentState();
 		swapcontext(schedulerCtx,runningThread->context);
 		//testar aqui se a thread que terminou nao desbloqueia alguma 
-		if(runningThread->bloqueando != -1) //significa q ela esta bloqueando alguma
-			printf("malandra ta bloqueando");
-			//TODO remover da fila de bloqueados
-			//removeThreadBlocked(&list_blocked, runningThread->bloqueando);
+		if(runningThread->bloqueando != -1){ //significa q ela esta bloqueando alguma
+			runningThread->bloqueando = -1;
+			removeThreadBlocked(&list_blocked, runningThread->tid);//remover
+		}
+			
 		}
 	printCurrentState();
-	
 }
 void threadFinalizada()
 {
@@ -45,6 +45,8 @@ void initialize()
 	list_ready= NULL;
 	started = 1;
 	currentTid++;
+	
+	invalidThread = (TCB *)malloc(sizeof(TCB));
 	
 	runningThread = (TCB *)malloc(sizeof(TCB));
 	runningThread->bloqueando = -1;
@@ -124,25 +126,47 @@ TCB removeThread(threadList** thrList)
 	return &curr->thread;
 }*/
 
-TCB* removeThreadBlocked(threadList** thrList, int tid){
+TCB removeThreadBlocked(threadList** thrList, int tid){
+	
 	threadList *curr = *thrList;
 	threadList *prev = NULL;
-	printf("Nao deu");
-	while(curr != NULL && curr->thread.waitingFor != tid){ 
-			prev = curr;
-			curr = curr->next;
-	}
-	if(prev != NULL)
-		prev->next = curr->next;
-	else
+	TCB th = curr->thread;
+	if (curr->next == NULL){
+		th.waitingFor = -1;
 		*thrList = curr->next;
-	return &curr->thread;
+		list_ready = insertThread(list_ready, th);
+		return th;
+	}
+	//refatorar a partir daqui
+	else{
+		while(curr->next != NULL && curr->thread.waitingFor != tid){ 
+				prev = curr;
+				curr = curr->next;
+		}
+	}
+	return curr->thread;
+}
+
+int checkThreadExists(threadList** thrList, int tid){
+	threadList *curr = *thrList;
+	while(curr != NULL && curr->thread.tid != tid)
+		curr = curr->next;
+	if (curr!= NULL)
+		return 1;
+	else return 0;
+	
 }
 
 TCB* searchThreadById(threadList** thrList, int id){
 	threadList *curr = *thrList;
+	if(thrList == NULL){
+		invalidThread->tid = -1;
+		return invalidThread;
+	}
 	while(curr != NULL && curr->thread.tid != id){ 
+		if (curr->next != NULL)
 			curr = curr->next;
+		else printf("AFFF");
 	}	
 	return &curr->thread;
 }
@@ -176,6 +200,7 @@ void printCurrentState()
 	printList(list_ready);
 	printf("LISTA DE BLOQUEADOS:\n   ");
 	printList(list_blocked);
+	printf("\n\n");
 }
 
 int sizeList(threadList* thrList) //retorna tamanho da lista

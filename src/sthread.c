@@ -17,7 +17,7 @@ int screate (int prio, void (*start)(void*), void *arg){
 		newThread->tid = currentTid;
 		newThread->estado = READY;
 		newThread->prio = prio;
-		newThread->waitingFor = 0;
+		newThread->waitingFor = -1;
 		newThread->bloqueando = -1;
 		
 		getcontext(newThread->context);
@@ -27,7 +27,7 @@ int screate (int prio, void (*start)(void*), void *arg){
 		
 		currentTid++; 
 		totalThreads++;
-		printf("\n############### SCREATE ## Criacao da Thread tid: %d\n", currentTid-1);
+		printf("\n############### SCREATE ## Criacao da Thread tid: %d ############### \n", currentTid-1);
 		printCurrentState();
 		return newThread->tid; //retorna o identificador da thread
 	}
@@ -38,17 +38,28 @@ int screate (int prio, void (*start)(void*), void *arg){
 
 }
 int syield(void){
-	
+	printf("\n############### SYIELD #################### \n");
+	if (list_ready !=NULL){
+		list_ready = insertThread(list_ready, *runningThread);
+		swapcontext(runningThread->context, schedulerCtx);
+	}
 	return 0;
 }
 
 int swait(int tid){
-	searchThreadById(&list_ready, tid)->bloqueando = runningThread->tid;
-	runningThread->waitingFor=tid;
-	list_blocked=insertThread(list_blocked, *runningThread);
+	printf("\n############### SWAIT ## Thread espera tid: %d ############### \n", tid);
+	if (checkThreadExists(&list_ready, tid)){
+		searchThreadById(&list_ready, tid)->bloqueando = runningThread->tid;
+		runningThread->waitingFor=tid;
+		list_blocked=insertThread(list_blocked, *runningThread);
 
-	printCurrentState();
-	swapcontext(runningThread->context, schedulerCtx);
+		printCurrentState();
+		swapcontext(runningThread->context, schedulerCtx);
+	}
+	else{ 
+		printf("\nTentando dar wait em thread ja terminada :)\n");
+		swapcontext(runningThread->context, schedulerCtx);
+	}
 	return 0;
 }
 

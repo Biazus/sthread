@@ -52,9 +52,11 @@ TCB createThread (int tid, int state, int prio, ucontext_t context, void* (*f) (
 threadList* insertThread(threadList* thrList, TCB thr);
 threadList* insertThreadTop(threadList* thrList, TCB thr);
 TCB* searchThreadById(threadList** thrList, int id);
-TCB* removeThreadBlocked(threadList** thrList, int tid);//se alguma thread estiver esperando pelo id atual, remove 
+//TCB* removeThreadBlocked(threadList** thrList, int tid);//se alguma thread estiver esperando pelo id atual, remove 
+TCB removeThreadBlocked(threadList** thrList, int tid);//se alguma thread estiver esperando pelo id atual, remove 
 TCB removeThread(threadList** thrList);
 
+int checkThreadExists(threadList** thrList, int tid);
 void printThreadInfo(TCB thread);
 void printCurrentState(void);
 void printList(threadList* thrList);
@@ -68,6 +70,7 @@ int vetorDeWaits[100];
 int indicevetorDeWaits;
 
 TCB *runningThread; //thread em estado running
+TCB *invalidThread;
 
 threadList* list_ready; //lista de threads com estado ready
 threadList* list_blocked; //lista de threads com estado blocked

@@ -64,11 +64,43 @@ int swait(int tid){
 }
 
 int smutex_init(smutex_t *mtx){
+	if(mtx != NULL ){
+		mtx->flag = 1; //secao critica livre;
+		mtx->next = createThreadsList(); //nenhuma thread esperando
+		return 0;
+	}
+	else return ERROR;
+}
+int slock (smutex_t *mtx){
+	/*if(mtx != NULL){
+		if(mtx->flag == 1){//entrada permitida na secao critica
+			mtx->flag = 0;
+			printf("\nEntrada permitida da thread %d na secao critica\n", runningThread->tid);
+			return 0;
+		}
+		else{
+			mtx->next = insertThread(mtx->next, *runningThread);
+			runningThread->estado = BLOCKED;
+			list_blocked = insertThread(list_blocked, *runningThread);
+			printf("\nEntrada negada, thread %d, bloqueada\n", runningThread->tid);
+			return swapcontext(runningThread->context, &schedulerCtx);
+		}	
+	}
+	else return ERROR;
+	* */
 	return 0;
 }
-int slock (smutex_t *varmutex){
+int sunlock (smutex_t *mtx){
+	/*if(mtx != NULL && mtx->next != NULL){
+		thread_t* thr = removeThreadById(&blocked, mtx->next->thread.tid); //remove a thread que estava esperando da lista de bloqueados
+		mtx->next->thread.estado = READY;
+		mtx->next->thread.context = thr->context; //recupera o contexto salvo quando foi bloqueada
+		list_ready = insertThread(list_ready, removeThread(&mtx->next)); //insere na lista de aptos
+		if(mtx->next == NULL) //nenhuma thread esperando
+			mtx->flag = 1;
+	printf("\nUnlock libera thread %d", thr->tid);
 	return 0;
-}
-int sunlock (smutex_t *varmutex){
-	return 0;
+	
+	}
+	else return ERROR;*/
 }

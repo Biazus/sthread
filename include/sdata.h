@@ -36,12 +36,11 @@ struct tList {
 };
 typedef struct tList threadList; //define o tipo lista
  
- 
+
 typedef struct mutex {
-	int flag;
-    TCB *first;
-	TCB *last;
-} smutex_t;
+		int flag;	//indicador de livre
+		threadList* next; //ponteiro para lista de threads esperando pela secao critica
+}smutex_t;
 
 // ************************************* FUNCS
 
@@ -55,6 +54,7 @@ TCB* searchThreadById(threadList** thrList, int id);
 //TCB* removeThreadBlocked(threadList** thrList, int tid);//se alguma thread estiver esperando pelo id atual, remove 
 TCB removeThreadBlocked(threadList** thrList, int tid);//se alguma thread estiver esperando pelo id atual, remove 
 TCB removeThread(threadList** thrList);
+threadList* createThreadsList();
 
 int checkThreadExists(threadList** thrList, int tid);
 void printThreadInfo(TCB thread);

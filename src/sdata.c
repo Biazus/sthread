@@ -15,12 +15,14 @@ void scheduler()
 		printCurrentState();
 		swapcontext(schedulerCtx,runningThread->context);
 		//testar aqui se a thread que terminou nao desbloqueia alguma 
-		if(runningThread->bloqueando != -1){ //significa q ela esta bloqueando alguma
+		if(runningThread->bloqueando != -1 && !checkThreadExists(&list_ready, runningThread->tid)){ //significa q ela esta bloqueando alguma
 			runningThread->bloqueando = -1;
 			removeThreadBlocked(&list_blocked, runningThread->tid);//remover
 		}
 			
 		}
+	while(runningThread!=NULL)
+		swapcontext(schedulerCtx,runningThread->context);
 	printCurrentState();
 }
 void threadFinalizada()
@@ -50,6 +52,7 @@ void initialize()
 	
 	runningThread = (TCB *)malloc(sizeof(TCB));
 	runningThread->bloqueando = -1;
+	runningThread->prio = 2;
 	runningThread->context = novoContexto();
 	(runningThread->context)->uc_link = NULL;
 	
@@ -100,7 +103,7 @@ threadList* insertThread(threadList* thrList, TCB thr) //insere thread por prior
 	return thrList;
 }
 
-threadList* insertThreadTop(threadList* thrList, TCB thr) //insere thread no inicio da lista
+threadList* insertThreadTop(threadList* thrList, TCB thr) //insere thread no inicio da lista (nao sei se vou usar mas ne)
 {
 	threadList* newNode = (threadList*) malloc(sizeof(threadList));
 	newNode->thread = thr;
@@ -147,14 +150,14 @@ TCB removeThreadBlocked(threadList** thrList, int tid){
 	return curr->thread;
 }
 
+
 int checkThreadExists(threadList** thrList, int tid){
 	threadList *curr = *thrList;
 	while(curr != NULL && curr->thread.tid != tid)
 		curr = curr->next;
 	if (curr!= NULL)
 		return 1;
-	else return 0;
-	
+	else return 0;	
 }
 
 TCB* searchThreadById(threadList** thrList, int id){
@@ -169,6 +172,12 @@ TCB* searchThreadById(threadList** thrList, int id){
 		else printf("AFFF");
 	}	
 	return &curr->thread;
+}
+
+//cria lista de threads
+threadList* createThreadsList()
+{
+	return NULL;
 }
 
 //************ UTILIDADES

@@ -4,6 +4,7 @@
 void func0(void *arg) {
 
         printf("Eu sou a thread ID0 imprimindo %d\n", *((int *)arg));
+        syield();
 	return;
 }
 
@@ -25,7 +26,8 @@ int main(int argc, char *argv[]) {
 
     swait(id2);
     id3 = screate(0, func1, (void *)&i);
-    //swait(id1);
+    swait(id1);
+    swait(id2);
 
     //printf("Eu sou a main voltando para terminar o programa\n");
     return 0;

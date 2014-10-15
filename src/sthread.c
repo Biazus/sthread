@@ -9,35 +9,32 @@ int screate (int prio, void (*start)(void*), void *arg){
 	if(started==0){  //inicializa
 		initialize();
 	}
-	if(totalThreads < MAXTHREADS) //se nao excedeu o total de threads
-	{
-		TCB *newThread = (TCB *)malloc( sizeof( TCB ) );;
-		newThread->context = novoContexto();
-		newThread->context->uc_link = schedulerCtx;
-		newThread->tid = currentTid;
-		newThread->estado = READY;
-		newThread->prio = prio;
-		newThread->waitingFor = -1;
-		newThread->bloqueando = -1;
-		
-		getcontext(newThread->context);
-		makecontext(newThread->context,(void (*)(void))start,1,arg);
-		
-		list_ready = insertThread(list_ready, *newThread); //insere nova thread em aptos
-		
-		currentTid++; 
-		totalThreads++;
-		printf("\n############### SCREATE ## Criacao da Thread tid: %d ############### \n", currentTid-1);
-		printCurrentState();
-		return newThread->tid; //retorna o identificador da thread
-	}
-	else{
-		printf("!! ############### SCREATE ## ERROR. Numero de threads excedeu ao total %d", MAXTHREADS);
-		return ERROR;
-	}
+	TCB *newThread = (TCB *)malloc( sizeof( TCB ) );;
+	newThread->context = novoContexto();
+	newThread->context->uc_link = schedulerCtx;
+	newThread->tid = currentTid;
+	newThread->estado = READY;
+	newThread->prio = prio;
+	newThread->waitingFor = -1;
+	newThread->bloqueando = -1;
+	
+	getcontext(newThread->context);
+	makecontext(newThread->context,(void (*)(void))start,1,arg);
+	
+	list_ready = insertThread(list_ready, *newThread); //insere nova thread em aptos
+	
+	currentTid++; 
+	totalThreads++;
+	printf("\n############### SCREATE ## Criacao da Thread tid: %d ############### \n", currentTid-1);
+	printCurrentState();
+	return newThread->tid; //retorna o identificador da thread
 
 }
 int syield(void){
+	if(started==0){  //inicializa
+		initialize();
+		return 0;
+	}
 	printf("\n############### SYIELD #################### \n");
 	if (list_ready !=NULL){
 		list_ready = insertThread(list_ready, *runningThread);
@@ -47,6 +44,10 @@ int syield(void){
 }
 
 int swait(int tid){
+	if(started==0){  //inicializa
+		initialize();
+		return 0;
+	}
 	printf("\n############### SWAIT ## Thread espera tid: %d ############### \n", tid);
 	if (runningThread->tid == tid){//caso a thread queira fazer wait com ela mesma
 		return 0;

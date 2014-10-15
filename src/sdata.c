@@ -8,7 +8,8 @@
 void scheduler()
 {
 	getcontext(schedulerCtx);
-	printf("\nCONTEXTO DO ESCALONADOR.\n");
+	//printf("\nCONTEXTO DO ESCALONADOR.\n");
+	
 	if(hasToBlock){
 		list_blocked = insertThread(list_blocked, *runningThread);
 		hasToBlock = 0;
@@ -208,13 +209,13 @@ void printThreadInfo(TCB thread)
 
 void printCurrentState()
 {
-	printf("\nRODANDO:\n");
+	/*printf("\nRODANDO:\n");
 	printf("\tTID: %d, Prio: %d, Waiting: %d, Bloqueando: %d\n", runningThread->tid, runningThread->prio, runningThread->waitingFor, runningThread->bloqueando);
 	printf("LISTA DE APTOS:\n   ");
 	printList(list_ready);
 	printf("LISTA DE BLOQUEADOS:\n   ");
 	printList(list_blocked);
-	printf("\n\n");
+	printf("\n\n");*/
 }
 
 int sizeList(threadList* thrList) //retorna tamanho da lista

@@ -27,19 +27,20 @@ void func1(void *arg) {
 
 int main(int argc, char *argv[]) {
 
-    int	id0, id1;
+    int	id0, id1, id2;
 	int i;
 	varMutex = malloc(sizeof(smutex_t));
 	smutex_init(varMutex);	
 	
 	
-    id0 = screate(0, func0, (void *)&i);
+    id0 = screate(2, func0, (void *)&i);
     id1 = screate(1, func1, (void *)&i);
+    id2 = screate(2, func0, (void *)&i);
 
     printf("Eu sou a main após a criação de ID0 e ID1\n");
 
     swait(0);
-    swait(id1);
+    swait(1);
 
     printf("Eu sou a main voltando para terminar o programa\n");
 }

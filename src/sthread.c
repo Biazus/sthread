@@ -60,7 +60,7 @@ int swait(int tid){
 		swapcontext(runningThread->context, schedulerCtx);
 	}
 	else{ 
-		printf("\nTentando dar wait em thread ja terminada.\n\n");
+		//printf("\nTentando dar wait em thread ja terminada.\n\n");
 		swapcontext(runningThread->context, schedulerCtx);
 	}
 	return 0;

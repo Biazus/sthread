@@ -1,7 +1,7 @@
 all: teste libsthread sthread.o sdata.o
 
 teste: libsthread
-	gcc -g -o ../bin/teste teste.c -L../lib -lsthread -Wall -lrt
+	gcc -g -o ../bin/teste teste_vetor.c -L../lib -lsthread -Wall -lrt
 
 libsthread: sthread.o sdata.o
 	ar crs ../lib/libsthread.a ../bin/sdata.o ../bin/sthread.o

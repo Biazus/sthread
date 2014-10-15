@@ -48,6 +48,9 @@ int syield(void){
 
 int swait(int tid){
 	printf("\n############### SWAIT ## Thread espera tid: %d ############### \n", tid);
+	if (runningThread->tid == tid){//caso a thread queira fazer wait com ela mesma
+		return 0;
+	}
 	if (checkThreadExists(&list_ready, tid)){
 		searchThreadById(&list_ready, tid)->bloqueando = runningThread->tid;
 		runningThread->waitingFor=tid;
@@ -57,7 +60,7 @@ int swait(int tid){
 		swapcontext(runningThread->context, schedulerCtx);
 	}
 	else{ 
-		printf("\nTentando dar wait em thread ja terminada :)\n");
+		printf("\nTentando dar wait em thread ja terminada.\n\n");
 		swapcontext(runningThread->context, schedulerCtx);
 	}
 	return 0;
@@ -70,37 +73,43 @@ int smutex_init(smutex_t *mtx){
 		return 0;
 	}
 	else return ERROR;
+	return 0;
 }
 int slock (smutex_t *mtx){
-	/*if(mtx != NULL){
+	if(mtx != NULL){
 		if(mtx->flag == 1){//entrada permitida na secao critica
 			mtx->flag = 0;
-			printf("\nEntrada permitida da thread %d na secao critica\n", runningThread->tid);
+			printf("\nEntrada permitida da thread %d na secao critica\n\n", runningThread->tid);
 			return 0;
 		}
 		else{
 			mtx->next = insertThread(mtx->next, *runningThread);
 			runningThread->estado = BLOCKED;
-			list_blocked = insertThread(list_blocked, *runningThread);
+			hasToBlock = 1;
+			//list_blocked = insertThread(list_blocked, *runningThread);
 			printf("\nEntrada negada, thread %d, bloqueada\n", runningThread->tid);
-			return swapcontext(runningThread->context, &schedulerCtx);
+			return swapcontext(runningThread->context, schedulerCtx);
 		}	
 	}
 	else return ERROR;
-	* */
-	return 0;
 }
 int sunlock (smutex_t *mtx){
-	/*if(mtx != NULL && mtx->next != NULL){
-		thread_t* thr = removeThreadById(&blocked, mtx->next->thread.tid); //remove a thread que estava esperando da lista de bloqueados
+	//if(mtx != NULL && mtx->next != NULL){
+	if(mtx != NULL && mtx->next != NULL){
+		TCB thr = removeThreadBlocked(&list_blocked, mtx->next->thread.tid); //remove a thread que estava esperando da lista de bloqueados
 		mtx->next->thread.estado = READY;
-		mtx->next->thread.context = thr->context; //recupera o contexto salvo quando foi bloqueada
+		mtx->next->thread.context = thr.context; //recupera o contexto salvo quando foi bloqueada
 		list_ready = insertThread(list_ready, removeThread(&mtx->next)); //insere na lista de aptos
 		if(mtx->next == NULL) //nenhuma thread esperando
 			mtx->flag = 1;
-	printf("\nUnlock libera thread %d", thr->tid);
-	return 0;
+		printf("\nUnlock libera thread %d", thr.tid);
+		return 0;
 	
 	}
-	else return ERROR;*/
+	else{
+		if(mtx->next == NULL) //nenhuma thread esperando
+			mtx->flag = 1;
+		printf("\nUnlock\n");
+		return ERROR;
+	}
 }

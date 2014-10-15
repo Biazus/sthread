@@ -1,34 +1,46 @@
-#include <stdio.h> // Usado para reconhecer o NULL!
-#include "../include/sthread.h" // Considera a estrutura de diretórios solicitada
+
+/*
+ *	Programa de exemplo de uso da biblioteca sthread
+ *
+ *	Versão 1.0 - 20/08/2014
+ *
+ *	Sistemas Operacionais I - www.inf.ufrgs.br
+ *
+ */
+
+#include "../include/sthread.h"
+
+smutex_t* varMutex;
 
 void func0(void *arg) {
-
-        printf("Eu sou a thread ID0 imprimindo %d\n", *((int *)arg));
-        syield();
+	slock(varMutex);
+    printf("Eu sou a thread ID0 imprimindo %d\n", *((int *)arg));
+    syield();
+    sunlock(varMutex);
 	return;
 }
 
 void func1(void *arg) {
-
+	  slock(varMutex);
       printf("Eu sou a thread ID1 imprimindo %d\n", *((int *)arg));
 }
 
 int main(int argc, char *argv[]) {
 
-    int	id0, id1, id2, id3;
+    int	id0, id1;
 	int i;
-
+	varMutex = malloc(sizeof(smutex_t));
+	smutex_init(varMutex);	
+	
+	
     id0 = screate(0, func0, (void *)&i);
     id1 = screate(1, func1, (void *)&i);
-    id2 = screate(0, func1, (void *)&i);
 
-    printf("\n\nTeste... criou threads (%d), (%d), (%d)\n", id0, id1, id2);
+    printf("Eu sou a main após a criação de ID0 e ID1\n");
 
-    swait(id2);
-    id3 = screate(0, func1, (void *)&i);
+    swait(0);
     swait(id1);
-    swait(id2);
 
-    //printf("Eu sou a main voltando para terminar o programa\n");
-    return 0;
+    printf("Eu sou a main voltando para terminar o programa\n");
 }
+

@@ -9,6 +9,11 @@ void scheduler()
 {
 	getcontext(schedulerCtx);
 	printf("\nCONTEXTO DO ESCALONADOR.\n");
+	if(hasToBlock){
+		list_blocked = insertThread(list_blocked, *runningThread);
+		hasToBlock = 0;
+		}
+	
 	while(list_ready){
 		*runningThread = removeThread(&list_ready);
 	

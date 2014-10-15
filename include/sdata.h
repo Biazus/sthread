@@ -68,6 +68,7 @@ int totalThreads; //numero total de thread
 int currentTid; //tid do ultimo elemento inserido na lista para controlar proximo tid
 int vetorDeWaits[100];
 int indicevetorDeWaits;
+int hasToBlock;
 
 TCB *runningThread; //thread em estado running
 TCB *invalidThread;

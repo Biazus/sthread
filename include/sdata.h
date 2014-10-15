@@ -8,7 +8,6 @@
 #define BILLION 1E9
 
 #define ERROR -1 //erro na execucao de funcao
-#define MAXTHREADS 100 //maximo de threads
 
 #define READY 1 //thread pronta
 #define RUNNING 0 //thread executando
